@@ -55,8 +55,10 @@ void dumpana() {
 }
 
 char FUSES[350]; /* this string stores the ascii dump of the fuses */
-char LDV[80];
-int ldvcount;
+char CBLDV[17];
+char FGLDV[80];
+int cbldvcount;
+int fgldvcount;
 
 unsigned char stacks[6][0x10000];
 
@@ -174,7 +176,8 @@ int main(){
 #ifndef NO_PRINT_CONFIG
     printf("\n * FUSES - write them down and keep them safe:\n");
     char *fusestr = FUSES;
-    char *ldvstr = LDV;
+    char *cbldvstr = CBLDV;
+    char *fgldvstr = FGLDV;
     
     for (i = 0; i < 12; ++i){
 	    u64 line;
@@ -187,13 +190,24 @@ int main(){
 	    fusestr += sprintf(fusestr, "fuseset %02d: %08x%08x\n", i, hi, lo);
 
 	    if (i >= 7) {
-		    ldvstr += sprintf(ldvstr, "%08x%08x", hi, lo);
+		    fgldvstr += sprintf(fgldvstr, "%08x%08x", hi, lo) + '\0';
 	    }
+            if (i == 2) {
+                    cbldvstr += sprintf(cbldvstr, "%08x%08x", hi, lo);
+            }
+
     }
+
+    for (i = 0; CBLDV[i] != '\0' ; ++i) {
+            if ('f' == CBLDV[i]) {
+                    cbldvcount = i + 1;
+            }
+    }
+
     
-    for (i = 0; LDV[i] != '\0'; ++i) {
-	    if ('f' == LDV[i]) {
-		    ++ldvcount;
+    for (i = 0; FGLDV[i] != '\0'; ++i) {
+	    if ('f' == FGLDV[i]) {
+		    ++fgldvcount;
 	    }
     }
     
@@ -224,7 +238,8 @@ int main(){
 	    printf(" * Console: Unknown\n");
     }
     
-    printf(" * F/G LDV: %d\n", ldvcount);
+    printf(" * 2BL LDV: %d\n", cbldvcount);
+    printf(" * 6BL LDV: %d\n", fgldvcount);
     
     network_print_config();
 #endif
