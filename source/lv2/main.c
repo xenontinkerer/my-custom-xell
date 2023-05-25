@@ -55,7 +55,7 @@ void dumpana() {
 }
 
 char FUSES[350]; /* this string stores the ascii dump of the fuses */
-char CBLDV[17];
+char CBLDV[17]; // 16 + terminate
 char FGLDV[80];
 int cbldvcount;
 int fgldvcount;
@@ -192,16 +192,16 @@ int main(){
 	    if (i >= 7) {
 		    fgldvstr += sprintf(fgldvstr, "%08x%08x", hi, lo) + '\0';
 	    }
-            if (i == 2) {
-                    cbldvstr += sprintf(cbldvstr, "%08x%08x", hi, lo);
-            }
+        if (i == 2) {
+            cbldvstr += sprintf(cbldvstr, "%08x%08x", hi, lo);
+        }
 
     }
 
     for (i = 0; CBLDV[i] != '\0' ; ++i) {
-            if ('f' == CBLDV[i]) {
-                    cbldvcount = i + 1;
-            }
+        if ('f' == CBLDV[i]) {
+            cbldvcount = i + 1;
+        }
     }
 
     
@@ -231,7 +231,7 @@ int main(){
     } else if (xenon_get_console_type() == 5) {
 	    printf(" * Console: Corona\n");
     } else if (xenon_get_console_type() == 6) {
-	    printf(" * Console: Corona Phison/eMMC (4GB)\n");
+	    printf(" * Console: Corona MMC\n");
     } else if (xenon_get_console_type() == 7) {
 	    printf(" * Console: Winchester - how did you get here???\n");
     } else if (xenon_get_console_type() == -1) {
