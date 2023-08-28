@@ -5,7 +5,7 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: mpmaile/libxenon-builder:latest
+    container: npmaile/libxenon-builder:latest
 
     steps:
     - uses: actions/checkout@v2
