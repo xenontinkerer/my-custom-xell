@@ -90,7 +90,7 @@ int main(){
     LogInit();
     int i;
 
-    printf("ANA Dump before Init:\n");
+    printf("ANA dump before init:\n");
     dumpana();
 
     // linux needs this
@@ -108,7 +108,7 @@ int main(){
 
     xenos_init(VIDEO_MODE_AUTO);
 
-    printf("ANA Dump after Init:\n");
+    printf("ANA dump after init:\n");
     dumpana();
 
 #ifdef SWIZZY_THEME
@@ -133,12 +133,12 @@ int main(){
 
     if (xenon_get_console_type() != REV_CORONA_PHISON) //Not needed for MMC type of consoles! ;)
     {
-	    printf(" * nand init\n");
+	    printf(" * NAND init\n");
 	    sfcx_init();
 	    if (sfc.initialized != SFCX_INITIALIZED)
 	    {
-		    printf(" ! sfcx initialization failure\n");
-		    printf(" ! nand related features will not be available\n");
+		    printf(" ! SFCX initialization failure\n");
+		    printf(" ! NAND related features will not be available\n");
 		    delay(5);
 	    }
     }
@@ -147,23 +147,23 @@ int main(){
 
 #ifndef NO_NETWORKING
 
-    printf(" * network init\n");
+    printf(" * Network init\n");
     network_init();
 
-    printf(" * starting httpd server...");
+    printf(" * Starting HTTPd server...");
     httpd_start();
-    printf("success\n");
+    printf("Success!\n");
 #endif
 
-    printf(" * usb init\n");
+    printf(" * USB init\n");
     usb_init();
     usb_do_poll();
 
-    printf(" * sata hdd init\n");
+    printf(" * SATA HDD init\n");
     xenon_ata_init();
 
 #ifndef NO_DVD
-    printf(" * sata dvd init\n");
+    printf(" * SATA DVD init\n");
     xenon_atapi_init();
 #endif
 
@@ -174,7 +174,7 @@ int main(){
     printf(" ______________________________________\n|                                      |\n|  XeLL RELOADED - Xenon Linux Loader  |\n|______________________________________|\n"); // Fancy
     
 #ifndef NO_PRINT_CONFIG
-    printf("\n * FUSES - write them down and keep them safe:\n");
+    printf("\n * FUSES - Write them down and keep them safe:\n");
     char *fusestr = FUSES;
     char *cbldvstr = CBLDV;
     char *fgldvstr = FGLDV;
@@ -233,7 +233,7 @@ int main(){
     } else if (xenon_get_console_type() == 6) {
 	    printf(" * Console: Corona MMC\n");
     } else if (xenon_get_console_type() == 7) {
-	    printf(" * Console: Winchester - how did you get here???\n");
+	    printf(" * Console: Winchester\n");
     } else if (xenon_get_console_type() == -1) {
 	    printf(" * Console: Unknown\n");
     }
