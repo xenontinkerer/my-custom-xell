@@ -8,7 +8,7 @@ jobs:
     container: npmaile/libxenon-builder:latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
     - name: Export variables
