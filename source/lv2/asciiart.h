@@ -1,5 +1,7 @@
 static char* asciiart = "\n"
-"With thanks to the XeLL authors, Octal450, barrenchea, and everyone else involved.\n"
+"With thanks to the XeLL authors, Octal450, Xbox 360 Hub, itsactuallyChaz and everyone else involved.\n"
+"\n"
+"Thank you for your purchase! Visit: discord.gg/fab39r5x6M for support.\n"
 "\n"
 "\n"
 " * Your console is running:\n"
@@ -14,7 +16,6 @@ static char* asciiart = "\n"
 "\n"
 "\n"
 "                                                                       ... courtesy of ZephyrWorksUK\n"
-"\n"
 "\n\n";
 static char* asciitail =
 	"              Free60.org XeLL RELOADED - Xenon Linux Loader\n\n";
