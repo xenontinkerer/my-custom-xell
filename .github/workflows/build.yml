@@ -10,6 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
+        repository: xenontinkerer/libxenon
         fetch-depth: 0
     - name: Export variables
       run: |
