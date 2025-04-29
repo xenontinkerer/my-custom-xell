@@ -1,52 +1,27 @@
-name: build
+name: Build and Deploy
 
 on: [push, pull_request]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    container: ghcr.io/xenontinkerer/libxenon:latest
 
     steps:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0
-
-    - name: Install dependencies
+    - name: Login to GitHub Container Registry
+      run: echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+    - name: Export variables
       run: |
-        sudo apt-get update
-        sudo apt-get install -y \
-          flex \
-          bison \
-          gcc-multilib \
-          libgmp3-dev \
-          libmpfr-dev \
-          libmpc-dev \
-          texinfo \
-          git-core \
-          build-essential \
-          wget \
-          file
-
-    - name: Clone libxenon repository
-      run: git clone https://github.com/xenontinkerer/libxenon.git ../libxenon
-
-    - name: Build libxenon
-      run: |
-        cd ../libxenon
-        ./build-xenon-toolchain toolchain
-        ./build-xenon-toolchain libxenon
-        ./build-xenon-toolchain libs
-
-    - name: Build XeLL
-      run: |
-        cd /app
-        make
-
+        echo DEVKITXENON=/usr/local/xenon >> $GITHUB_ENV
+        echo /usr/local/xenon/bin >> $GITHUB_PATH
+        echo /usr/local/xenon/usr/bin >> $GITHUB_PATH
+    - name: Build
+      run: make
     - name: Build (dist)
-      run: |
-        cd /app
-        make dist
-
+      run: make dist
     - uses: actions/upload-artifact@v4
       with:
         name: XeLL-binaries
