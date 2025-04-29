@@ -1,27 +1,46 @@
-name: Build and Deploy
+name: build
 
 on: [push, pull_request]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: ghcr.io/xenontinkerer/libxenon:latest
 
     steps:
-    - uses: actions/checkout@v4
+    # Step 1: Checkout the XeLL repository (you may need both repos for the build)
+    - name: Checkout XeLL repository
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
-    - name: Login to GitHub Container Registry
-      run: echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+    # Step 2: Checkout the libxenon repository to build the Docker image
+    - name: Checkout libxenon repository
+      uses: actions/checkout@v4
+      with:
+        repository: xenontinkerer/libxenon  # Assuming your libxenon repo is public
+        path: libxenon  # Will save it as a subfolder
+
+    # Step 3: Set up Docker to use your custom Dockerfile
+    - name: Build libxenon Docker image
+      run: |
+        docker build -t ghcr.io/xenontinkerer/libxenon:latest -f libxenon/libxenon.dockerfile .
+
+    # Step 4: Export necessary environment variables for build
     - name: Export variables
       run: |
         echo DEVKITXENON=/usr/local/xenon >> $GITHUB_ENV
         echo /usr/local/xenon/bin >> $GITHUB_PATH
         echo /usr/local/xenon/usr/bin >> $GITHUB_PATH
-    - name: Build
+
+    # Step 5: Build XeLL using your custom Docker image
+    - name: Build XeLL
       run: make
+
+    # Step 6: Create a distribution of the build
     - name: Build (dist)
       run: make dist
+
+    # Step 7: Upload the resulting XeLL binaries as artifacts
     - uses: actions/upload-artifact@v4
       with:
         name: XeLL-binaries
