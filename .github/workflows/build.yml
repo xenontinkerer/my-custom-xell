@@ -5,10 +5,10 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: ghcr.io/xenontinkerer/libxenon:latest
+    container: npmaile/libxenon-builder:latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v2
       with:
         fetch-depth: 0
     - name: Export variables
@@ -20,7 +20,7 @@ jobs:
       run: make
     - name: Build (dist)
       run: make dist
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v2
       with:
         name: XeLL-binaries
         path: XeLL_Reloaded-2stages-*.tar.gz
