@@ -5,6 +5,7 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
+    container: ghcr.io/xenontinkerer/libxenon:latest  # Your custom container with libxenon
 
     steps:
     - uses: actions/checkout@v4
@@ -12,28 +13,44 @@ jobs:
         fetch-depth: 0
 
     - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install -y build-essential git libtool autoconf automake texinfo libgmp-dev libmpfr-dev libmpc-dev flex bison
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          flex \
+          bison \
+          gcc-multilib \
+          libgmp3-dev \
+          libmpfr-dev \
+          libmpc-dev \
+          texinfo \
+          git-core \
+          build-essential \
+          wget \
+          file
 
-    - name: Clone and build libxenon
+    - name: Export variables
+      run: |
+        echo DEVKITXENON=/usr/local/xenon >> $GITHUB_ENV
+        echo $DEVKITXENON/bin >> $GITHUB_PATH
+        echo $DEVKITXENON/usr/bin >> $GITHUB_PATH
+
+    - name: Build libxenon
       run: |
         git clone https://github.com/xenontinkerer/libxenon.git ../libxenon
         cd ../libxenon
-        ./autogen.sh
-        ./configure --prefix=/usr/local/xenon
-        make -j$(nproc)
-        sudo make install
-
-    - name: Export toolchain path
-      run: |
-        echo DEVKITXENON=/usr/local/xenon >> $GITHUB_ENV
-        echo /usr/local/xenon/bin >> $GITHUB_PATH
-        echo /usr/local/xenon/usr/bin >> $GITHUB_PATH
+        ./build-xenon-toolchain toolchain
+        ./build-xenon-toolchain libxenon
+        ./build-xenon-toolchain libs
 
     - name: Build XeLL
-      run: make
+      run: |
+        cd /app
+        make
 
     - name: Build (dist)
-      run: make dist
+      run: |
+        cd /app
+        make dist
 
     - uses: actions/upload-artifact@v4
       with:
